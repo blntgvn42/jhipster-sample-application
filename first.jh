@@ -1,0 +1,135 @@
+
+application {
+  config {
+    baseName school
+    applicationType monolith
+    packageName com.school
+    authenticationType jwt
+    prodDatabaseType postgresql
+    clientFramework react
+  }
+  entities *
+}
+
+enum PersonelTuru {
+	MUDUR,
+    MUDUR_YARDIMCISI,
+	HIZMETLI,
+    OGRETMEN,
+    OGRETMEN_YARDIMCISI,
+    YEDEK_OGRETMEN,
+    ASCI,
+    ASCI_YARDIMCISI,
+    DESTEK_PERSONELI
+}
+
+enum OgunTuru {
+	SABAH_KAHVALTI,
+    OGLEN_YEMEGI,
+    ARA_YEMEK,
+    AKSAM_YEMEK
+}
+
+enum OgrenimTuru {
+	TAM_ZAMANLI,
+    YARI_ZAMANLI
+}
+
+enum MezunDurumu {
+	MEZUN,
+    DEVAMLI_OGRENCI,
+    PASIF,
+    KAYIT_YENILEME
+}
+
+enum HakedisOdemeDurumu {
+	ODENDI,
+    KISMEN_ODENDI,
+    ODENMEDI
+}
+
+enum HakedisTuru {
+	TAM_ZAMANLI,
+    YARI_ZAMANLI,
+    KULUP,
+    EK_DERS
+}
+
+entity Personel {
+    adi String required,
+    soyadi String required,
+    tcKimlik Bigint required,
+    telefon String required,
+    adres String required,
+    turu PersonelTuru required
+}
+
+entity YemekTanim {
+	kodu String required,
+    adi String required,
+    icerik String required,
+    ogunTuru OgunTuru required
+}
+
+entity EtkinlikTanim {
+	adi String required,
+    icerik String required,
+    personel Personel required,
+    yardimciPersonel Personel required,
+    baslangicTarihi LocalDate required,
+    bitisTarihi LocalDate required,
+}
+
+entity SinifTanim {
+	kodu String required,
+	adi String required,
+    sorumluPersonel Personel required,
+    sorumluYardimciPersonel Personel required,
+    bulunduguKat String required,
+    aileSorumluVeli String required,
+    aileSorumluVeliTel String required,
+}
+
+entity OgrenciTanim {
+	kodu String required,
+	adi String required,
+    soyadi String required,
+    dogumTarihi LocalDate required,
+    anneAdi String required,
+    babaAdi String required,
+    adres String required,
+    iletisimNo String required,
+    iletisimNo2 String,
+    acilDurumIletisim String,
+    nufusIl String required,
+    nufusIlce String required,
+    ogrenimTuru OgrenimTuru required
+}
+
+entity OgrenciDonemTanim {
+	ogrenciTanim OgrenciTanim required,
+    sinifTanim SinifTanim required,
+    yemekTanim YemekTanim required,
+    mezunDurumu MezunDurumu required,
+    donemBaslangicTarihi LocalDate required,
+    donemBitisTarihi LocalDate required,
+    aylikTutar Double required
+}
+
+entity OgrenciOdemeTakip {
+	ogrenciTanim OgrenciTanim required,
+    ogrenciDonemTanim OgrenciDonemTanim required,
+    hakedisBaslangicTarihi LocalDate required,
+    hakedisBitisTarihi LocalDate required,
+    hakedisTutar Double required,
+    hakedisOdemeTuru HakedisOdemeTuru required,
+    hakedisTuru HakedisTuru required,
+    kulupTutar Double required,
+    odemeDurumu Boolean required,
+    odemeTarihi LocalDate required,
+    kalanTutar Double required,
+    odenenTutar Double required
+}
+
+service all with serviceClass
+paginate all with infinite-scroll
